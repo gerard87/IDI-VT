@@ -1,0 +1,48 @@
+{% extends "idivt/base.html" %}
+
+
+{% block content %}
+
+<div class="row">
+    <div class="col l6 m6 s12">
+        <h3>Industrial Drone Inspection Visualization Tool</h3>
+        <img src="/static/img/logo_idivt.png" width="500">
+    </div>
+    <div class="col l6 m6 s12">
+        <div class="collection collection-item">
+
+        {% for line in lines_list %}
+              <div class="collection-item" style="height:60px;">
+                  <div style="padding-top:10px;font-size:20px;">{{ line.name }}
+                      {% if line.visibility %}
+                          <a href="" class="secondary-content">
+                            <i class="material-icons secondary-content" style="color:black; font-size:40px; margin-top:-10px;">cancel</i>
+                          </a>
+                          <a href="" class="secondary-content">
+                            <i class="material-icons secondary-content" style="font-size:40px; margin-top:-10px;">autorenew</i>
+                          </a>
+                          <a href="" class="secondary-content">
+                            <i href="" class="material-icons secondary-content"
+                              style="color:green; font-size:40px; margin-top:-10px;">visibility</i>
+                          </a>
+
+                      {% else %}
+
+                          <a href="" class="secondary-content">
+                            <i class="material-icons" style="color:red;font-size:40px; margin-top:-10px;">visibility</i>
+                          </a>
+
+                      {% endif %}
+
+                  </div>
+              </div>
+
+        {% empty %}<a>Sorry, no lines registered yet.</a>
+        {% endfor %}
+
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
