@@ -21,14 +21,14 @@
                           <a href="" class="secondary-content">
                             <i class="material-icons secondary-content" style="font-size:40px; margin-top:-10px;">autorenew</i>
                           </a>
-                          <a href="" class="secondary-content">
-                            <i href="" class="material-icons secondary-content"
+                          <a href="{% url 'idivt:idivtsend' line.pk %}" class="secondary-content">
+                            <i class="material-icons secondary-content"
                               style="color:green; font-size:40px; margin-top:-10px;">visibility</i>
                           </a>
 
                       {% else %}
 
-                          <a href="" class="secondary-content">
+                          <a href="{% url 'idivt:idivtsend' line.pk %}" class="secondary-content">
                             <i class="material-icons" style="color:red;font-size:40px; margin-top:-10px;">visibility</i>
                           </a>
 
