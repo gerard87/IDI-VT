@@ -7,7 +7,7 @@ from django.views.generic.base import RedirectView
 urlpatterns = [
 
     url(r'^$',
-        RedirectView.as_view(url=reverse_lazy('idivt:idivt')),
+        RedirectView.as_view(url=reverse_lazy('idivt:idivtview')),
         name='home_page'),
 
     url(r'^idivt.html$',

@@ -1,8 +1,12 @@
 from django.shortcuts import render
-from models import Line
 from django.views.generic import ListView
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+
+from liquidgalaxy.lgCommunication import write_kml, flyto
+from liquidgalaxy.kml_generator import create_line_kml
+from IDIVT.settings import BASE_DIR
+from models import Line, Tower
 
 
 class idivt_view(ListView):
@@ -18,10 +22,21 @@ def idivt_send(request, key):
         line.visibility = False
     else:
         line.visibility = True
+
+        ls = Line.objects.all()
+        for l in ls:
+            if l != line:
+                l.visibility = False
+                l.save()
+
+        flyto(line.name)
     line.save()
 
-    #folderKML = BASE_DIR+'/static/idivt/'+line.name
-    #flyto(system.name)
-    #write_kml(folderKML, "idivt", line.name, line.visibility)
+    folderKML = BASE_DIR+'/static/kml/'
+
+    towers = Tower.objects.filter(line=line)
+    create_line_kml(line, towers)
+
+    write_kml(folderKML, "idivt", line.name, line.visibility)
 
     return HttpResponseRedirect(reverse('idivt:idivtview'),{})
