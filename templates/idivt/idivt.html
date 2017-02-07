@@ -15,10 +15,10 @@
               <div class="collection-item" style="height:60px;">
                   <div style="padding-top:10px;font-size:20px;">{{ line.name }}
                       {% if line.visibility %}
-                          <a href="" class="secondary-content">
+                          <a href="{% url 'idivt:idivtexitrotate' line.pk %}" class="secondary-content">
                             <i class="material-icons secondary-content" style="color:black; font-size:40px; margin-top:-10px;">cancel</i>
                           </a>
-                          <a href="" class="secondary-content">
+                          <a href="{% url 'idivt:idivtrotate' line.pk %}" class="secondary-content">
                             <i class="material-icons secondary-content" style="font-size:40px; margin-top:-10px;">autorenew</i>
                           </a>
                           <a href="{% url 'idivt:idivtsend' line.pk %}" class="secondary-content">

@@ -29,6 +29,14 @@ def get_server_ip():
     ip_server = p.communicate()[0]
     return ip_server
 
+def send_single_kml(kmlFile):
+    ip_server = get_server_ip()
+    os.system("touch kmls.txt")
+    file = open("kmls.txt", 'a')
+    file.write("http://" + str(ip_server)[0:(len(ip_server) - 1)] +":8000/"+ kmlFile + "\n")
+    file.close()
+    send_galaxy()
+
 def write_kml(kmlFolder, tool, filename, visibility):
     print(kmlFolder)
     print(BASE_DIR)
@@ -52,3 +60,11 @@ def send_galaxy():
     server_path = "/var/www/html"
     print("sshpass -p '"+ get_password() +"' scp " + file_path + " lg@" + get_galaxy_ip() +":" + server_path)
     os.system("sshpass -p '"+ get_password() +"' scp " + file_path + " lg@" + get_galaxy_ip() +":" + server_path)
+
+def start_tour():
+    message = "echo 'playtour=line' > /tmp/query.txt"
+    comunicate(message)
+
+def exit_tour():
+    message = "echo 'exittour=line' > /tmp/query.txt"
+    comunicate(message)

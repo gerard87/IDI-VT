@@ -1,4 +1,5 @@
 import os
+from idivt.models import Tower
 
 def create_line_kml(line, towers):
     filename = "static/kml/" + line.name + ".kml"
@@ -65,5 +66,49 @@ def create_line_kml(line, towers):
             "\t</Document>\n" +
             "</kml>\n")
 
+        kml_file.close()
+        return filename
+
+def create_rotation_kml(line):
+    positions = Tower.objects.all().filter(line=line)
+    middlePosition = positions[len(positions)/2]
+
+    return create_rotation_kml_aux(middlePosition)
+
+
+def create_rotation_kml_aux(middlePosition):
+
+    filename = "static/kml/rotation.kml"
+
+    os.system("touch %s" % (filename))
+
+    with open(filename, "w") as kml_file:
+        kml_file.write(
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\">\n" +
+            "\t<gx:Tour>\n" +
+            "\t\t<name>line</name>\n" +
+            "\t\t<gx:Playlist>\n")
+        for grades in range(0,360,11):
+            kml_file.write(
+                "\t\t<gx:FlyTo>\n" +
+                "\t\t\t<gx:duration>5.0</gx:duration>\n" +
+                "\t\t\t<gx:flyToMode>smooth</gx:flyToMode>\n" +
+                            "\t\t\t\t<LookAt>\n" +
+                            "\t\t\t\t\t<longitude>"+ str(middlePosition.longitude) +"</longitude>\n" +
+                            "\t\t\t\t\t<latitude>"+ str(middlePosition.latitude) +"</latitude>\n" +
+                            "\t\t\t\t\t<altitude>0</altitude>\n" +
+                            "\t\t\t\t\t<heading>"+str(grades)+"</heading>\n" +
+                            "\t\t\t\t\t<range>6000</range>\n" +
+                            "\t\t\t\t\t<tilt>80</tilt>\n" +
+                            "\t\t\t\t\t<altitudeMode>relativeToGround</altitudeMode>\n" +
+                            "\t\t\t\t</LookAt>\n" +
+                            "\t\t</gx:FlyTo>\n"
+                            )
+        kml_file.write(
+            "\t\t</gx:Playlist>\n" +
+            "\t</gx:Tour>\n" +
+            "</kml>\n"
+        )
         kml_file.close()
         return filename
