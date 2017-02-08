@@ -2,9 +2,10 @@ from django.shortcuts import render
 from django.views.generic import ListView
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+import time
 
 from liquidgalaxy.lgCommunication import write_kml, flyto, send_single_kml, start_tour, exit_tour
-from liquidgalaxy.kml_generator import create_line_kml, create_rotation_kml
+from liquidgalaxy.kml_generator import create_line_kml2, create_rotation_kml, create_line_kmz
 from IDIVT.settings import BASE_DIR
 from models import Line, Tower
 
@@ -18,6 +19,10 @@ def idivt_send(request, key):
 
     line = Line.objects.get(pk=key)
 
+    folderKML = BASE_DIR+'/static/kml/'
+    folderImg = BASE_DIR+'/static/img/'
+    millis = int(round(time.time()*1000))
+
     if line.visibility:
         line.visibility = False
     else:
@@ -30,16 +35,17 @@ def idivt_send(request, key):
                 l.save()
 
         flyto(line.name)
+        towers = Tower.objects.filter(line=line)
+        create_line_kml2(line, towers)
+        create_line_kmz(line, folderKML, folderImg, millis)
+
     line.save()
 
-    folderKML = BASE_DIR+'/static/kml/'
-
-    towers = Tower.objects.filter(line=line)
-    create_line_kml(line, towers)
-
-    write_kml(folderKML, "idivt", line.name, line.visibility)
+    write_kml(folderKML, "idivt", line.name, line.visibility, millis)
 
     return HttpResponseRedirect(reverse('idivt:idivtview'),{})
+
+
 
 
 def rotate_galaxy(request, key):

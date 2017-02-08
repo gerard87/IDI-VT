@@ -37,7 +37,7 @@ def send_single_kml(kmlFile):
     file.close()
     send_galaxy()
 
-def write_kml(kmlFolder, tool, filename, visibility):
+def write_kml(kmlFolder, tool, filename, visibility, sufix):
     print(kmlFolder)
     print(BASE_DIR)
 
@@ -48,10 +48,7 @@ def write_kml(kmlFolder, tool, filename, visibility):
     os.system("touch kmls.txt")
     if visibility:
         file = open("kmls.txt", 'w')
-        onlyfiles = [f for f in os.listdir(kmlFolder) if isfile(join(kmlFolder, f))]
-        for kmlFile in onlyfiles:
-            if kmlFile == filename+".kml":
-                file.write("http://" + str(ip_server)[0:(len(ip_server) - 1)] +":8000/static/kml/" + kmlFile + "\n")
+        file.write("http://" + str(ip_server)[0:(len(ip_server) - 1)] +":8000/static/kml/" + filename + str(sufix) + ".kmz" + "\n")
         file.close()
     send_galaxy()
 
