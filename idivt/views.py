@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 import time
 
 from liquidgalaxy.lgCommunication import write_kml, flyto, send_single_kml, start_tour, exit_tour
-from liquidgalaxy.kml_generator import create_line_kml2, create_rotation_kml, create_line_kmz
+from liquidgalaxy.kml_generator import create_line_kml2, create_tour_rotation_kml, create_line_kmz
 from IDIVT.settings import BASE_DIR
 from models import Line, Tower
 
@@ -50,7 +50,7 @@ def idivt_send(request, key):
 
 def rotate_galaxy(request, key):
     line = Line.objects.get(pk=key)
-    kml = create_rotation_kml(line)
+    kml = create_tour_rotation_kml(line)
     send_single_kml(kml)
     start_tour()
     return HttpResponseRedirect(reverse('idivt:idivtview'),{})

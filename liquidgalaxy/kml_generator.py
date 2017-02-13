@@ -135,14 +135,20 @@ def create_line_kmz(line, folderKML, folderImg, sufix):
     finally:
         zf.close()
 
-def create_rotation_kml(line):
+def create_center_line_rotation_kml(line):
     positions = Tower.objects.all().filter(line=line)
-    middlePosition = positions[len(positions)/2]
+    middlePosition = []
+    middlePosition.append(positions[len(positions)/2])
 
     return create_rotation_kml_aux(middlePosition)
 
+def create_tour_rotation_kml(line):
+    positions = Tower.objects.all().filter(line=line)
 
-def create_rotation_kml_aux(middlePosition):
+    return create_rotation_kml_aux2(positions)
+
+
+def create_rotation_kml_aux(positions):
 
     filename = "static/kml/rotation.kml"
 
@@ -155,22 +161,9 @@ def create_rotation_kml_aux(middlePosition):
             "\t<gx:Tour>\n" +
             "\t\t<name>line</name>\n" +
             "\t\t<gx:Playlist>\n")
-        for grades in range(0,360,11):
-            kml_file.write(
-                "\t\t<gx:FlyTo>\n" +
-                "\t\t\t<gx:duration>5.0</gx:duration>\n" +
-                "\t\t\t<gx:flyToMode>smooth</gx:flyToMode>\n" +
-                            "\t\t\t\t<LookAt>\n" +
-                            "\t\t\t\t\t<longitude>"+ str(middlePosition.longitude) +"</longitude>\n" +
-                            "\t\t\t\t\t<latitude>"+ str(middlePosition.latitude) +"</latitude>\n" +
-                            "\t\t\t\t\t<altitude>0</altitude>\n" +
-                            "\t\t\t\t\t<heading>"+str(grades)+"</heading>\n" +
-                            "\t\t\t\t\t<range>6000</range>\n" +
-                            "\t\t\t\t\t<tilt>80</tilt>\n" +
-                            "\t\t\t\t\t<altitudeMode>relativeToGround</altitudeMode>\n" +
-                            "\t\t\t\t</LookAt>\n" +
-                            "\t\t</gx:FlyTo>\n"
-                            )
+        for position in positions:
+            for grades in range(0,360,11):
+                animate(kml_file, position.longitude, position.latitude, grades, 5.0)
         kml_file.write(
             "\t\t</gx:Playlist>\n" +
             "\t</gx:Tour>\n" +
@@ -178,3 +171,57 @@ def create_rotation_kml_aux(middlePosition):
         )
         kml_file.close()
         return filename
+
+
+def create_rotation_kml_aux2(positions):
+
+    filename = "static/kml/rotation.kml"
+
+    os.system("touch %s" % (filename))
+
+    with open(filename, "w") as kml_file:
+        kml_file.write(
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\">\n" +
+            "\t<gx:Tour>\n" +
+            "\t\t<name>line</name>\n" +
+            "\t\t<gx:Playlist>\n")
+        for position in positions:
+
+            if position == positions[0]:
+                for grades in range(0,180,10):
+                    animate(kml_file, position.longitude, position.latitude, grades, 0.5)
+            else:
+                animate(kml_file, position.longitude, position.latitude, 180, 4)
+
+        for position in positions[::-1]:
+
+            if position == positions[len(positions)-1]:
+                for grades in range(190,360,10):
+                    animate(kml_file, position.longitude, position.latitude, grades, 0.5)
+            else:
+                animate(kml_file, position.longitude, position.latitude, 0, 4)
+
+        kml_file.write(
+            "\t\t</gx:Playlist>\n" +
+            "\t</gx:Tour>\n" +
+            "</kml>\n"
+        )
+        kml_file.close()
+        return filename
+
+def animate(kml_file, longitude, latitude, grades, duration):
+    kml_file.write(
+        "\t\t<gx:FlyTo>\n" +
+        "\t\t\t<gx:duration>"+str(duration)+"</gx:duration>\n" +
+        "\t\t\t<gx:flyToMode>smooth</gx:flyToMode>\n" +
+        "\t\t\t\t<LookAt>\n" +
+        "\t\t\t\t\t<longitude>"+ str(longitude) +"</longitude>\n" +
+        "\t\t\t\t\t<latitude>"+ str(latitude) +"</latitude>\n" +
+        "\t\t\t\t\t<altitude>0</altitude>\n" +
+        "\t\t\t\t\t<heading>"+str(grades)+"</heading>\n" +
+        "\t\t\t\t\t<range>700</range>\n" +
+        "\t\t\t\t\t<tilt>80</tilt>\n" +
+        "\t\t\t\t\t<altitudeMode>relativeToGround</altitudeMode>\n" +
+        "\t\t\t\t</LookAt>\n" +
+        "\t\t</gx:FlyTo>\n")

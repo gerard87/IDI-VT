@@ -5,7 +5,7 @@ import subprocess
 from os.path import isfile,join
 
 def get_galaxy_ip():
-    return '10.160.100.171'
+    return '10.160.100.154'
 
 def get_password():
     return 'lqgalaxy'
