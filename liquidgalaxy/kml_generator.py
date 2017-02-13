@@ -1,5 +1,4 @@
-import os
-import zipfile
+import os, math, zipfile
 from idivt.models import Tower
 
 
@@ -15,9 +14,8 @@ def create_line_kml2(line, towers):
             "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\">\n" +
             "\t<Folder>\n")
 
-        for tower in towers:
+        for index, tower in enumerate(towers):
             kml_file.write(
-
                 "\t\t<Placemark>\n"+
                 "\t\t\t\t<name>" + tower.name + "</name>\n" +
                 "\t\t\t<Style id=\""+str(tower.pk)+"\" />\n" +
@@ -28,8 +26,12 @@ def create_line_kml2(line, towers):
                 "\t\t\t\t\t<longitude>"+str(tower.longitude)+"</longitude>\n" +
                 "\t\t\t\t\t<altitude>"+str(tower.altitude)+"</altitude>\n" +
                 "\t\t\t\t</Location>\n" +
-                "\t\t\t\t<Orientation>\n" +
-                "\t\t\t\t\t<heading>358.4156652213</heading>\n" +
+                "\t\t\t\t<Orientation>\n")
+
+            tower2 = towers[index-1] if tower == towers[len(towers)-1] else towers[index+1]
+
+            kml_file.write(
+                "\t\t\t\t\t<heading>"+getHeading(tower, tower2)+"</heading>\n" +
                 "\t\t\t\t\t<tilt>0</tilt>\n" +
                 "\t\t\t\t\t<roll>0</roll>\n" +
                 "\t\t\t\t</Orientation>\n" +
@@ -53,6 +55,25 @@ def create_line_kml2(line, towers):
 
         kml_file.close()
         return filename
+
+def getHeading(tower1, tower2):
+
+    pointA = [tower1.latitude, tower1.longitude]
+    pointB = [tower2.latitude, tower2.longitude]
+
+    lat1 = math.radians(pointA[0])
+    lat2 = math.radians(pointB[0])
+
+    diffL = math.radians(pointB[1]-pointA[1])
+
+    x = math.sin(diffL) * math.cos(lat2)
+    y = math.cos(lat1) * math.sin(lat2) - (math.sin(lat1) * math.cos(lat2) * math.cos(diffL))
+
+    bearing = math.atan2(x, y)
+    bearing = math.degrees(bearing)
+
+    return str((bearing+360) % 360)
+
 
 
 def create_line_kml(line, towers):

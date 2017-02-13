@@ -6,7 +6,7 @@ class Line(models.Model):
 
     name = models.TextField()
     visibility = models.BooleanField(default=False)
-    
+
     def __unicode__(self):
         return str(self.name)
 
@@ -17,6 +17,7 @@ class Tower(models.Model):
     longitude = models.DecimalField(max_digits=20, decimal_places=15)
     latitude = models.DecimalField(max_digits=20, decimal_places=15)
     altitude = models.DecimalField(max_digits=20, decimal_places=15)
+
 
     def __unicode__(self):
         return str(self.name)

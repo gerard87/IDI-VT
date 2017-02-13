@@ -1,0 +1,1 @@
+http://10.160.100.57:8000/static/kml/Solsona1486986378961.kmz
