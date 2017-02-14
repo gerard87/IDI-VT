@@ -51,6 +51,23 @@ def create_line_kml2(line, towers):
                 "\t\t\t\t</Point>\n" +
                 "\t\t\t</Placemark>\n")
 
+        kml_file.write(
+            "\t\t\t<Placemark>\n" +
+            "\t\t\t\t<name>" + tower.name + "</name>\n" +
+            "\t\t\t\t<visibility>1</visibility>\n" +
+            "\t\t\t\t<LineString>\n" +
+            "\t\t\t\t\t<coordinates>\n")
+        for tower in towers:
+            kml_file.write(str(tower.longitude) +","+
+                            str(tower.latitude) +","+ str(tower.altitude))
+            if tower != towers[len(towers)-1]:
+                kml_file.write(",")
+
+        kml_file.write("\n\t\t\t\t\t</coordinates>\n" +
+					"\t\t\t\t\t<Tesellate>1</Tesellate>\n" +
+                    "\t\t\t\t</LineString>\n" +
+                    "\t\t\t</Placemark>\n")
+
         kml_file.write("\t</Folder>\n" + "</kml>\n")
 
         kml_file.close()

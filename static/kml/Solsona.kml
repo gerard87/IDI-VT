@@ -131,5 +131,15 @@
 					<coordinates>1.506660000000000,41.986370000000000,0E-15</coordinates>
 				</Point>
 			</Placemark>
+			<Placemark>
+				<name>SOLSONA - CONGOST 110KV 247400000810</name>
+				<visibility>1</visibility>
+				<LineString>
+					<coordinates>
+1.496629797672390,41.990801344804900,0E-15,1.498862514862210,41.989803844465400,0E-15,1.501530000000000,41.988650000000000,0E-15,1.504705158642880,41.987241249646000,0E-15,1.506660000000000,41.986370000000000,0E-15
+					</coordinates>
+					<Tesellate>1</Tesellate>
+				</LineString>
+			</Placemark>
 	</Folder>
 </kml>
