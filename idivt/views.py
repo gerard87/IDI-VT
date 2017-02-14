@@ -34,8 +34,10 @@ def idivt_send(request, key):
                 l.visibility = False
                 l.save()
 
-        flyto(line.name)
+
         towers = Tower.objects.filter(line=line)
+        dst = str(towers[0].latitude)+","+str(towers[0].longitude) if len(towers) > 0 else line.name
+        flyto(dst)
         create_line_kml(line, towers)
         create_line_kmz(line, folderKML, folderImg, millis)
 
