@@ -15,67 +15,79 @@ def create_line_kml(line, towers):
             "\t<Folder>\n")
 
         for index, tower in enumerate(towers):
-            kml_file.write(
-                "\t\t<Placemark>\n"+
-                "\t\t\t\t<name>" + tower.name + "</name>\n" +
-                "\t\t\t<Style id=\""+str(tower.pk)+"\" />\n" +
-                "\t\t\t<Model>\n" +
-                "\t\t\t\t<altitudeMode>relativeToGround</altitudeMode>\n" +
-                "\t\t\t\t<Location>\n" +
-                "\t\t\t\t\t<latitude>"+str(tower.latitude)+"</latitude>\n" +
-                "\t\t\t\t\t<longitude>"+str(tower.longitude)+"</longitude>\n" +
-                "\t\t\t\t\t<altitude>"+str(tower.altitude)+"</altitude>\n" +
-                "\t\t\t\t</Location>\n" +
-                "\t\t\t\t<Orientation>\n")
 
-            if len(towers) > 1:
-                tower2 = towers[index-1] if tower == towers[len(towers)-1] else towers[index+1]
-                heading = getHeading(tower, tower2)
-            else:
-                heading = 0
+            drawTower(kml_file, index, tower, towers)
+            pushpin(kml_file, tower)
 
-            kml_file.write(
-                "\t\t\t\t\t<heading>"+str(heading)+"</heading>\n" +
-                "\t\t\t\t\t<tilt>0</tilt>\n" +
-                "\t\t\t\t\t<roll>0</roll>\n" +
-                "\t\t\t\t</Orientation>\n" +
-                "\t\t\t\t<Scale><x>1</x><y>1</y><z>1</z></Scale>\n" +
-                "\t\t\t\t<Link><href>models/untitled.dae</href></Link>\n" +
-                "\t\t\t</Model>\n" +
-                "\t\t</Placemark>\n")
-
-            kml_file.write(
-                "\t\t\t<Placemark>\n" +
-                "\t\t\t\t<name>" + tower.name + "</name>\n" +
-                "\t\t\t\t<visibility>1</visibility>\n" +
-                "\t\t\t\t<Point>\n" +
-                "\t\t\t\t\t<coordinates>" + str(tower.longitude) +","+
-                str(tower.latitude) +","+ str(tower.altitude) +
-                "</coordinates>\n" +
-                "\t\t\t\t</Point>\n" +
-                "\t\t\t</Placemark>\n")
-
-        kml_file.write(
-            "\t\t\t<Placemark>\n" +
-            "\t\t\t\t<name>" + tower.name + "</name>\n" +
-            "\t\t\t\t<visibility>1</visibility>\n" +
-            "\t\t\t\t<LineString>\n" +
-            "\t\t\t\t\t<coordinates>\n")
-        for tower in towers:
-            kml_file.write(str(tower.longitude) +","+
-                            str(tower.latitude) +","+ str(tower.altitude))
-            if tower != towers[len(towers)-1]:
-                kml_file.write(",")
-
-        kml_file.write("\n\t\t\t\t\t</coordinates>\n" +
-					"\t\t\t\t\t<Tesellate>1</Tesellate>\n" +
-                    "\t\t\t\t</LineString>\n" +
-                    "\t\t\t</Placemark>\n")
+        drawLine(kml_file, tower, towers)
 
         kml_file.write("\t</Folder>\n" + "</kml>\n")
 
         kml_file.close()
         return filename
+
+
+def drawTower(kml_file, index, tower, towers):
+    kml_file.write(
+        "\t\t<Placemark>\n"+
+        "\t\t\t\t<name>" + tower.name + "</name>\n" +
+        "\t\t\t<Style id=\""+str(tower.pk)+"\" />\n" +
+        "\t\t\t<Model>\n" +
+        "\t\t\t\t<altitudeMode>relativeToGround</altitudeMode>\n" +
+        "\t\t\t\t<Location>\n" +
+        "\t\t\t\t\t<latitude>"+str(tower.latitude)+"</latitude>\n" +
+        "\t\t\t\t\t<longitude>"+str(tower.longitude)+"</longitude>\n" +
+        "\t\t\t\t\t<altitude>"+str(tower.altitude)+"</altitude>\n" +
+        "\t\t\t\t</Location>\n" +
+        "\t\t\t\t<Orientation>\n")
+
+    if len(towers) > 1:
+        tower2 = towers[index-1] if tower == towers[len(towers)-1] else towers[index+1]
+        heading = getHeading(tower, tower2)
+    else: heading = 0
+
+    kml_file.write(
+        "\t\t\t\t\t<heading>"+str(heading)+"</heading>\n" +
+        "\t\t\t\t\t<tilt>0</tilt>\n" +
+        "\t\t\t\t\t<roll>0</roll>\n" +
+        "\t\t\t\t</Orientation>\n" +
+        "\t\t\t\t<Scale><x>1</x><y>1</y><z>1</z></Scale>\n" +
+        "\t\t\t\t<Link><href>models/untitled.dae</href></Link>\n" +
+        "\t\t\t</Model>\n" +
+        "\t\t</Placemark>\n")
+
+
+def pushpin(kml_file, tower):
+    kml_file.write(
+        "\t\t\t<Placemark>\n" +
+        "\t\t\t\t<name>" + tower.name + "</name>\n" +
+        "\t\t\t\t<visibility>1</visibility>\n" +
+        "\t\t\t\t<Point>\n" +
+        "\t\t\t\t\t<coordinates>" + str(tower.longitude) +","+
+        str(tower.latitude) +","+ str(tower.altitude) +
+        "</coordinates>\n" +
+        "\t\t\t\t</Point>\n" +
+        "\t\t\t</Placemark>\n")
+
+
+def drawLine(kml_file, tower, towers):
+    kml_file.write(
+        "\t\t\t<Placemark>\n" +
+        "\t\t\t\t<name>" + tower.name + "</name>\n" +
+        "\t\t\t\t<visibility>1</visibility>\n" +
+        "\t\t\t\t<LineString>\n" +
+        "\t\t\t\t\t<coordinates>\n")
+    for tower in towers:
+        kml_file.write(str(tower.longitude) +","+
+                        str(tower.latitude) +","+ str(tower.altitude))
+        if tower != towers[len(towers)-1]:
+            kml_file.write(",")
+
+    kml_file.write("\n\t\t\t\t\t</coordinates>\n" +
+                "\t\t\t\t\t<Tesellate>1</Tesellate>\n" +
+                "\t\t\t\t</LineString>\n" +
+                "\t\t\t</Placemark>\n")
+
 
 def getHeading(tower1, tower2):
 
@@ -108,6 +120,7 @@ def create_line_kmz(line, folderKML, folderImg, sufix):
     finally:
         zf.close()
 
+
 def create_center_line_rotation_kml(line):
     positions = Tower.objects.all().filter(line=line)
     middlePosition = []
@@ -115,9 +128,9 @@ def create_center_line_rotation_kml(line):
 
     return create_rotation_kml_aux(middlePosition)
 
+
 def create_tour_rotation_kml(line):
     positions = Tower.objects.all().filter(line=line)
-
     return create_rotation_kml_aux2(positions)
 
 
