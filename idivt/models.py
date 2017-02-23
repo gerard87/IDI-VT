@@ -8,7 +8,7 @@ class Line(models.Model):
     visibility = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return str(self.name)
+        return u'%s' % self.name
 
 class Tower(models.Model):
 
@@ -20,4 +20,4 @@ class Tower(models.Model):
 
 
     def __unicode__(self):
-        return str(self.name)
+        return u'%s' % self.name

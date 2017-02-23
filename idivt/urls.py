@@ -1,6 +1,6 @@
 from django.conf.urls import url, patterns, include
 from django.core.urlresolvers import reverse_lazy
-from views import idivt_view, idivt_send, rotate_galaxy, exit_rotate_galaxy
+from views import idivt_view, idivt_send, rotate_galaxy, exit_rotate_galaxy, import_data
 from django.views.generic.base import RedirectView
 
 
@@ -25,5 +25,9 @@ urlpatterns = [
     url(r'^idivt/exitrotate/(?P<key>\w+)/$',
         exit_rotate_galaxy,
         name='idivtexitrotate'),
+
+    url(r'^idivt/import/$',
+        import_data,
+        name='idivtimport'),
 
 ]

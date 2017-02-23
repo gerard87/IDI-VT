@@ -1,5 +1,9 @@
+# -*- coding: utf-8 -*-
+
 import os, math, zipfile, time
 from idivt.models import Tower
+from fastkml import kml
+from idivt.models import Line, Tower
 
 
 def create_line_kml(line, towers):
@@ -201,3 +205,28 @@ def animate(kml_file, longitude, latitude, grades, duration):
 
 def getMillis():
     return int(round(time.time()*1000))
+
+
+def import_kml_data(filename):
+    doc = file("static/kml/doc.kml").read()
+    k = kml.KML()
+    k.from_string(doc)
+
+    features = list(k.features())
+    features2 = list(features[0].features())
+
+    kvs = list(features2[0].features())
+    for kv in kvs:
+        if kv.name.encode('UTF-8') != "Traçat":
+            lines = list(kv.features())
+            for item in lines:
+                line = Line(name=item.name.encode('UTF-8'))
+                line.save()
+                towers = list(item.features())
+                for item2 in towers:
+                    if type(item2) is kml.Placemark:
+                        tower = Tower(name=item2.name.encode('UTF-8'), line=line,
+                            longitude=item2.geometry.bounds[0],
+                            latitude=item2.geometry.bounds[1],
+                            altitude=item2.geometry.bounds[2])
+                        tower.save()
